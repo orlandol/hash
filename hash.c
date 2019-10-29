@@ -18,13 +18,6 @@
   unsigned line;
   unsigned column;
 
-  char ReadChar( FILE* file ) {
-    return 0;
-  }
-
-  void SkipComments( FILE* file ) {
-  }
-
 /*
  *  Bit-2 Hash (Draft)
  *
@@ -76,6 +69,34 @@
   }
 
   void RunBit64kTest( char* fileName ) {
+  }
+
+/*
+ *  64K LSB Hash (Draft)
+ *
+ *  Hash method which calculates bit value from the three least
+ *    significant bits of each character; and uses a position based,
+ *    patterned, bit inversion. 65536 bits are compressed down to
+ *    16-bits.
+ *
+ */
+
+  unsigned LSB64kHash( char* ident ) {
+    FILE* wordFile = NULL;
+    char curWord[64] = {};
+
+    return 0;
+
+  ReturnError:
+    if( wordFile ) {
+      fclose( wordFile );
+      wordFile = NULL;
+    }
+
+    return 0;
+  }
+
+  void RunLSB64kTest( char* fileName ) {
   }
 
 /*
@@ -140,6 +161,12 @@ int main( int argc, char* argv[] ) {
     printf( "\nUsage: hash file.ext\n" );
     return 1;
   }
+
+  RunBit2Test( argv[1] );
+  RunBit64kTest( argv[1] );
+  RunLSB64kTest( argv[1] );
+  RunWeighted64kTest( argv[1] );
+  RunTwoPassTest( argv[1] );
 
   return 0;
 }
