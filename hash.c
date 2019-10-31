@@ -82,21 +82,54 @@
  */
 
   unsigned LSB64kHash( char* ident ) {
+    unsigned hashCode = 0;
+    unsigned identLength = 0;
+
+    if( ident ) {
+      while( *ident ) {
+        if( (*ident == '\r') || (*ident == '\n') ) {
+          ident++;
+          continue;
+        }
+
+        if( identLength & 1 ) {
+          hashCode = (hashCode << 2) + ((*ident) & 2);
+        } else {
+          hashCode = (hashCode << 1) + ((*ident) & 3);
+        }
+        hashCode &= 0x0000FFFF;
+        ident++;
+      }
+    }
+
+    return hashCode;
+  }
+
+  void RunLSB64kTest( char* fileName ) {
     FILE* wordFile = NULL;
     char curWord[64] = {};
 
-    return 0;
+    printf( "\nRunning LSB64kHash tests...\n" );
 
-  ReturnError:
+    wordFile = fopen(fileName, "rb");
+    if( wordFile == NULL ) {
+      printf( "  Error: Unable to open file '%s'\n", fileName );
+      goto Cleanup;
+    }
+
+    while( feof(wordFile) == 0 ) {
+      if( fgets(curWord, 64, wordFile) == NULL ) {
+        break;
+      }
+
+      printf( "'%s' == %08X\n", curWord, LSB64kHash(curWord) );
+    }
+
+  Cleanup:
     if( wordFile ) {
       fclose( wordFile );
       wordFile = NULL;
     }
-
-    return 0;
-  }
-
-  void RunLSB64kTest( char* fileName ) {
   }
 
 /*
