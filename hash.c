@@ -95,7 +95,7 @@
         if( identLength & 1 ) {
           hashCode = (hashCode << 2) + ((*ident) & 2);
         } else {
-          hashCode = (hashCode << 1) + ((*ident) & 3);
+          hashCode = (hashCode << 2) + ((*ident) & 3);
         }
         hashCode &= 0x0000FFFF;
         ident++;
@@ -122,7 +122,7 @@
         break;
       }
 
-      printf( "'%s' == %08X\n", curWord, LSB64kHash(curWord) );
+      ///TODO: Add to collision list
     }
 
   Cleanup:
