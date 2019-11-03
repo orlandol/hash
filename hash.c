@@ -9,16 +9,6 @@
   DECLARE_STRING_KEYARRAY_TYPES( HashList, char* )
 
 /*
- *  General declarations and functions
- */
-
-  HashList* hashList = NULL;
-  HashList* collisionList = NULL;
-
-  unsigned line;
-  unsigned column;
-
-/*
  *  Bit-2 Hash (Draft)
  *
  *  Hash method using a look up table for each identifier character.
@@ -41,75 +31,17 @@
     return 0;
   }
 
-  void RunBit2Test( char* fileName ) {
-  }
-
 /*
- *  64K Value Hash (Draft)
- *
- *  Hash method which counts selected bits. 65536 bits are compressed
- *    down to 16-bits. Most frequent characters have a value of 1.
- *    Characters of average frequency have a value of 2. Characters of
- *    low frequency have a value of 3.
- *
+ *  Test function
  */
 
-  const unsigned bit64kTable[63] = {
-  /* _ */
-  /* a */
-  /* z */
-  /* A */
-  /* Z */
-  /* 0 */
-  /* 9 */
-  };
-
-  unsigned Bit64kHash( char* ident ) {
-    return 0;
-  }
-
-  void RunBit64kTest( char* fileName ) {
-  }
-
-/*
- *  64K LSB Hash (Draft)
- *
- *  Hash method which calculates bit value from the three least
- *    significant bits of each character; and uses a position based,
- *    patterned, bit inversion. 65536 bits are compressed down to
- *    16-bits.
- *
- */
-
-  unsigned LSB64kHash( char* ident ) {
-    unsigned hashCode = 0;
-    unsigned identLength = 0;
-
-    if( ident ) {
-      while( *ident ) {
-        if( (*ident == '\r') || (*ident == '\n') ) {
-          ident++;
-          continue;
-        }
-
-        if( identLength & 1 ) {
-          hashCode = (hashCode << 2) + ((*ident) & 2);
-        } else {
-          hashCode = (hashCode << 2) + ((*ident) & 3);
-        }
-        hashCode &= 0x0000FFFF;
-        ident++;
-      }
-    }
-
-    return hashCode;
-  }
-
-  void RunLSB64kTest( char* fileName ) {
+  void RunTest( char* fileName, unsigned (*hashFunc)(char* ident) ) {
     FILE* wordFile = NULL;
     char curWord[64] = {};
-
-    printf( "\nRunning LSB64kHash tests...\n" );
+    HashList* hashList = NULL;
+    HashList* collisionList = NULL;
+    unsigned line;
+    unsigned column;
 
     wordFile = fopen(fileName, "rb");
     if( wordFile == NULL ) {
@@ -133,58 +65,6 @@
   }
 
 /*
- *  Weighted 64K Hash (Draft)
- *
- *  Hash method which keeps a count of characters, grouped by
- *    frequency of infrequent, average, and frequent. 65536 bits
- *    are compressed to 16-bits. Hash code is calculated as
- *    (infrequent * X) + (average * Y) + frequent.
- *
- */
-
-  const unsigned weighted64kTable[63] = {
-  /* _ */
-  /* a */
-  /* z */
-  /* A */
-  /* Z */
-  /* 0 */
-  /* 9 */
-  };
-
-  unsigned Weighted64kHash( char* ident ) {
-    return 0;
-  }
-
-  void RunWeighted64kTest( char* fileName ) {
-  }
-
-/*
- *  TwoPassHash (Draft)
- *
- *  Hash method which counts characters, then calculates the hash
- *    value by combining each character count.
- *
- */
-
-  const unsigned twoPassTable[63] = {
-  /* _ */
-  /* a */
-  /* z */
-  /* A */
-  /* Z */
-  /* 0 */
-  /* 9 */
-  };
-
-  unsigned TwoPassHash( char* ident ) {
-    return 0;
-  }
-
-  void RunTwoPassTest( char* fileName ) {
-  }
-
-/*
  *  Main program
  */
 
@@ -195,11 +75,8 @@ int main( int argc, char* argv[] ) {
     return 1;
   }
 
-  RunBit2Test( argv[1] );
-  RunBit64kTest( argv[1] );
-  RunLSB64kTest( argv[1] );
-  RunWeighted64kTest( argv[1] );
-  RunTwoPassTest( argv[1] );
+  printf( "\nRunning Bit2Hash tests...\n" );
+  RunTest( argv[1], Bit2Hash );
 
   return 0;
 }
