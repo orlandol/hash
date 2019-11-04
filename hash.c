@@ -288,16 +288,24 @@
   };
 
   unsigned Bit2Hash( char* ident ) {
-    uint16_t hashCode = 0;
+    uint16_t hashCode = 0xB0EF;
+    uint8_t ch;
+    unsigned counted[256] = {};
 
-    while( *ident ) {
-      if( ((*ident) == '_') || isalnum(*ident) ) {
-        hashCode ^= bit2Table[(*ident) & 0xFF];
-        hashCode = (hashCode << 5) | (hashCode >> 11);
-        hashCode += 10141;
+    if( ident ) {
+      ch = *ident;
+
+      while( ident && ch ) {
+        if( (ch == '_') || (isalnum(ch) != 0) ) {
+          if( counted[ch] == 0 ) {
+            counted[ch] = (-1);
+            hashCode ^= ch;
+            hashCode += 9811;
+          }
+        }
+  
+        ch = *ident++;
       }
-
-      ident++;
     }
 
     return hashCode;
@@ -333,7 +341,7 @@
       }
 
       ///TODO: Add to collision list
-      printf( "%s, %u\n", curWord, Bit2Hash(curWord) );
+      printf( "%u, %s\n", Bit2Hash(curWord), curWord );
     }
 
   Cleanup:
