@@ -837,6 +837,11 @@
     unsigned line;
     unsigned column;
 
+    if( hashFunc == NULL ) {
+      printf( "  Error: hashFunc can't be NULL\n" );
+      goto Cleanup;
+    }
+
     wordFile = fopen(fileName, "rb");
     if( wordFile == NULL ) {
       printf( "  Error: Unable to open file '%s'\n", fileName );
@@ -855,7 +860,7 @@
       }
 
       ///TODO: Add to collision list
-      printf( "%u, %s\n", Bit2Hash(curWord), curWord );
+      printf( "%u, %s\n", hashFunc(curWord), curWord );
     }
 
   Cleanup:
